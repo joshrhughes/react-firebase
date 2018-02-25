@@ -3,12 +3,12 @@
 //going to be a class based component
 
 import React, { Component } from 'react';
-import { TextInput } from 'react-native';
-import { Button, Card, CardSection } from './common';
+
+import { Button, Card, CardSection, Input } from './common';
 
 class LoginForm extends Component {
     //add state to recive input from user
-    state = { text: ''};
+    state = { email: '', password: ''};
 
 
     //TextInput -> user types text -> onChange Text event called -> 'setstate' with new text -> component rerenders 
@@ -18,13 +18,25 @@ class LoginForm extends Component {
         return ( 
             <Card>
                 <CardSection>
-                    <TextInput 
-                    value={this.state.text}
-                    onChangeText={text => this.setState({ text })}
-                    style={{ height: 20, width: 100}}/>
-                    
+                    <Input 
+                    placeholder="user@gmail.com"
+                    label="Email"
+                    value={this.state.email}
+                    onChangeText={email => this.setState({ email })}
+                    //could also be {text => this.setState({ email: text })}
+                    />         
+                </CardSection>   
+
+                <CardSection >
+                    <Input 
+                    placeholder="password"
+                    label="Password"
+                    secureTextEntry
+                    value={this.state.password}
+                    onChangeText={password => this.setState({ password })}
+                    />
                 </CardSection>    
-                <CardSection />
+
                 <CardSection>
                     <Button>
                         Log In
