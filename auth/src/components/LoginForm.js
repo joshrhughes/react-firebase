@@ -5,26 +5,54 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 import firebase from 'firebase';
-import { Button, Card, CardSection, Input } from './common';
+import { Button, Card, CardSection, Input, Spinner } from './common';
 
 
 
 class LoginForm extends Component {
     //add state to recive input from user
-    state = { email: '', password: '', error: ''};
+    state = { email: '', password: '', error: '', loading: false};
 
     onButtonPress() {
         const { email, password  } = this.state;
 
-        this.setState({ error: '' });
+        this.setState({ error: '', loading: true });
 
         firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(this.onLonginSuccess.bind(this))
             .catch(() => {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .catch(() => {
-                        this.setState({ error: 'Authentication Failed'});
-                    });
+                    .then(this.onLonginSuccess.bind(this))
+                    .catch(this.onLoginFail.bind(this));
             });
+    }
+
+    onLoginFail() {
+        this.setState({
+            error: 'Authentication Failed',
+            loading: false
+        });
+    }
+
+    onLonginSuccess() {
+        this.setState({ 
+            email: '',
+            password: '',
+            loading: false,
+            error: ''
+         });
+    }
+
+
+    renderButton() {
+        if (this.state.loading) {
+            return <Spinner size="small" />;
+        }
+        return (
+            <Button onPress={this.onButtonPress.bind(this)}>
+                Log In
+            </Button>
+        );
     }
 
     //TextInput -> user types text -> onChange Text event called -> 'setstate' with new text -> component rerenders 
@@ -58,9 +86,7 @@ class LoginForm extends Component {
                 </Text>
 
                 <CardSection>
-                    <Button onPress={this.onButtonPress.bind(this)}>
-                        Log In
-                    </Button>
+                   {this.renderButton()}
                 </CardSection>    
              </Card>
         ); 
