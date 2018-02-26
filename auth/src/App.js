@@ -5,6 +5,9 @@ import { Header } from './components/common';
 import LoginForm from './components/LoginForm';
 
 class App extends Component {
+
+    stat = { loggedIn: false };
+
     //bringin in Firebase
     componentWillMount () {
         firebase.initializeApp ({
@@ -15,6 +18,15 @@ class App extends Component {
             storageBucket: 'auth-3236f.appspot.com',
             messagingSenderId: '740860130602'
         });
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({ loggedIn: true });
+            } else {
+                this.setState({ loggedIn: false });
+            }
+        });
+
     }
 
 
